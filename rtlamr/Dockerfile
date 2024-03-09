@@ -19,7 +19,7 @@ LABEL Description="This image is used to start a script that will monitor for RF
 RUN apk add --no-cache --virtual build-deps alpine-sdk cmake git libusb-dev && \
     mkdir /tmp/src && \
     cd /tmp/src && \
-    git clone https://gitea.osmocom.org/sdr/rtl-sdr.git && \
+    git clone https://github.com/osmocom/rtl-sdr.git && \
     mkdir /tmp/src/rtl-sdr/build && \
     cd /tmp/src/rtl-sdr/build && \
     cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr/local && \
@@ -28,15 +28,15 @@ RUN apk add --no-cache --virtual build-deps alpine-sdk cmake git libusb-dev && \
     chmod +s /usr/local/bin/rtl_* && \
     apk del build-deps && \
     rm -r /tmp/src && \
-    apk add --no-cache libusb mosquitto-clients jq coreutils-9.4-r2 wget-1.21.4-r0 make musl-dev go git gcc
-	
+    apk add --no-cache libusb mosquitto-clients jq coreutils wget make musl-dev go git gcc usb-modeswitch
+
 # Configure Go
 ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
-RUN go get github.com/bemasher/rtlamr
+RUN go install github.com/bemasher/rtlamr@latest
 
 ADD ./run.sh /run.sh
 
